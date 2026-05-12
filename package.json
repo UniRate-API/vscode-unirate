@@ -1,0 +1,180 @@
+{
+  "name": "vscode-unirate",
+  "displayName": "UniRate Currency",
+  "description": "Live foreign-exchange rates in the status bar, command-palette currency conversions, and hover-over-number conversions in any file. Powered by UniRateAPI.",
+  "version": "0.1.0",
+  "publisher": "UniRate-API",
+  "license": "MIT",
+  "icon": "images/icon.png",
+  "engines": {
+    "vscode": "^1.85.0",
+    "node": ">=18"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "currency",
+    "exchange-rate",
+    "forex",
+    "fx",
+    "unirate"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/UniRate-API/vscode-unirate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/UniRate-API/vscode-unirate/issues"
+  },
+  "homepage": "https://github.com/UniRate-API/vscode-unirate#readme",
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "unirate.convert",
+        "title": "UniRate: Convert currency…",
+        "category": "UniRate"
+      },
+      {
+        "command": "unirate.setPair",
+        "title": "UniRate: Set status-bar currency pair…",
+        "category": "UniRate"
+      },
+      {
+        "command": "unirate.refresh",
+        "title": "UniRate: Refresh status-bar rate",
+        "category": "UniRate"
+      },
+      {
+        "command": "unirate.clearCache",
+        "title": "UniRate: Clear cached rates",
+        "category": "UniRate"
+      },
+      {
+        "command": "unirate.insertConversion",
+        "title": "UniRate: Insert conversion at cursor…",
+        "category": "UniRate"
+      }
+    ],
+    "configuration": {
+      "title": "UniRate Currency",
+      "properties": {
+        "unirate.apiKey": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Your UniRateAPI key. Free tier covers latest rates and currency lists. [Sign up](https://unirateapi.com/register) for a key.",
+          "scope": "application"
+        },
+        "unirate.baseCurrency": {
+          "type": "string",
+          "default": "USD",
+          "markdownDescription": "Default source currency used by the status-bar widget and hover provider.",
+          "pattern": "^[A-Za-z]{3,5}$",
+          "scope": "window"
+        },
+        "unirate.targetCurrency": {
+          "type": "string",
+          "default": "EUR",
+          "markdownDescription": "Default target currency used by the status-bar widget and hover provider.",
+          "pattern": "^[A-Za-z]{3,5}$",
+          "scope": "window"
+        },
+        "unirate.statusBar.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the live FX rate in the status bar.",
+          "scope": "window"
+        },
+        "unirate.statusBar.position": {
+          "type": "string",
+          "enum": [
+            "left",
+            "right"
+          ],
+          "default": "right",
+          "description": "Side of the status bar to attach the widget to.",
+          "scope": "application"
+        },
+        "unirate.statusBar.refreshMinutes": {
+          "type": "number",
+          "default": 30,
+          "minimum": 1,
+          "description": "How often (in minutes) the status-bar rate is refreshed in the background.",
+          "scope": "window"
+        },
+        "unirate.hover.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show a conversion tooltip when hovering over an amount followed by a currency code (e.g. `100 USD`).",
+          "scope": "window"
+        },
+        "unirate.hover.targets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "USD",
+            "EUR",
+            "GBP"
+          ],
+          "description": "Currency codes the hover tooltip will convert each detected amount into. Falls back to `unirate.targetCurrency` when empty.",
+          "scope": "window"
+        },
+        "unirate.rateDecimals": {
+          "type": "number",
+          "default": 4,
+          "minimum": 0,
+          "maximum": 10,
+          "description": "Decimal places for displayed FX rates.",
+          "scope": "window"
+        },
+        "unirate.moneyDecimals": {
+          "type": "number",
+          "default": 2,
+          "minimum": 0,
+          "maximum": 10,
+          "description": "Decimal places for converted amounts.",
+          "scope": "window"
+        },
+        "unirate.cache.rateTtlSeconds": {
+          "type": "number",
+          "default": 3600,
+          "minimum": 0,
+          "description": "How long live FX rates are cached (seconds). 0 disables the cache.",
+          "scope": "window"
+        },
+        "unirate.cache.historicalTtlSeconds": {
+          "type": "number",
+          "default": 86400,
+          "minimum": 0,
+          "description": "How long historical FX rates are cached (seconds). Historical rates never change so a longer TTL is safe.",
+          "scope": "window"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.config.mjs",
+    "watch": "node esbuild.config.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "test": "jest",
+    "package": "vsce package --no-dependencies",
+    "vscode:prepublish": "node esbuild.config.mjs --production"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^18.19.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.2.0",
+    "esbuild": "^0.25.5",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.3.0",
+    "typescript": "^5.8.3"
+  }
+}
